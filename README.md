@@ -1,11 +1,11 @@
-# @ceramic-ui/looky
+# looky
 
 `Looky` is a utility that lets you resolve props into values from your theme responsively. It is intended for use in CSS-in-JS libraries like [styled-components][s-c] and [emotion][emotion].
 
 ## Install
 
 ```
-npm install @ceramic-ui/looky
+npm install looky
 ```
 
 ## Use
@@ -14,7 +14,7 @@ Here's a simple example of creating a `Container` component with responsive gutt
 
 ```js
 import styled, { ThemeProvider } from "styled-components";
-import Looky from "@ceramic-ui/looky";
+import Looky from "looky";
 
 /*
 First let's define a theme with spacing DNA among other attributes and a `media` property listing our breakpoints
