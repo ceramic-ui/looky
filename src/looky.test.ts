@@ -100,11 +100,11 @@ const testCases: TestCase[] = [
   }
 ];
 
-testCases.forEach(({ title, expected, interpolate, props }) => {
+testCases.forEach(({ title, expected, interpolate: i, props: p }) => {
   test(title, () => {
     const resolver = looky(props => props.theme.media);
-    const resolveSpacing = resolver("spacing", interpolate);
-    const out = resolveSpacing(props);
+    const resolveSpacing = resolver("spacing", i);
+    const out = resolveSpacing(p);
     expect(out).toBe(expected);
   });
 });
