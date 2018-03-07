@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works with styled-components for multiple value 1`] = `
+.c0 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+@media (min-width:768px) {
+  .c0 {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (min-width:992px) {
+  .c0 {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+<div
+  className="c0"
+>
+  Hello
+</div>
+`;
+
+exports[`works with styled-components for single value 1`] = `
+.c0 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+<div
+  className="c0"
+>
+  Hello
+</div>
+`;

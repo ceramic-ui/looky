@@ -32,8 +32,20 @@
   },
   "devDependencies": {
     "@types/jest": "^22.2.0",
+    "@types/react": "^16.0.40",
+    "@types/react-dom": "^16.0.4",
+    "@types/react-test-renderer": "^16.0.1",
+    "emotion": "^9.0.2",
     "jest": "^22.4.2",
+    "jest-emotion": "^9.0.0",
+    "jest-styled-components": "^5.0.0",
     "prettier": "^1.11.1",
+    "prop-types": "^15.6.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-emotion": "^9.0.2",
+    "react-test-renderer": "^16.2.0",
+    "styled-components": "^3.2.0",
     "ts-jest": "^22.4.1",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.9.0",
@@ -41,6 +53,7 @@
     "typescript": "^2.7.2"
   },
   "jest": {
+    "setupTestFrameworkScriptFile": "./jest/framework.js",
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
