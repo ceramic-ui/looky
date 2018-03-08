@@ -1,8 +1,8 @@
 import dlv from "dlv";
 
-export type ResponsiveProp<K extends string> = {
-  [p in K]?: string | Array<string | null>
-};
+export type ResponsiveValue = string | Array<string | null>;
+
+export type ResponsiveProp<K extends string> = { [p in K]?: ResponsiveValue };
 export interface Themed {
   theme: {
     media: string[];
