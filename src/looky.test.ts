@@ -1,17 +1,26 @@
-import looky from ".";
+import Looky from ".";
 
 const interpolate = (v: any) => `margin-bottom: ${v};`;
+
+enum Spacing {
+  Unknown = "unknown",
+  Small = "small",
+  Default = "default",
+  Large = "large"
+}
+
+interface Theme {
+  media: string[];
+  spacings: { [k in Spacing]?: string };
+}
 
 interface TestCase {
   title: string;
   expected: string;
   interpolate: (v: any) => string;
   props: {
-    spacing?: string | Array<string | null>;
-    theme: {
-      media: string[];
-      spacings?: { [k: string]: string };
-    };
+    spacing?: Spacing | Array<Spacing | null>;
+    theme: Theme;
   };
 }
 
@@ -21,10 +30,10 @@ const testCases: TestCase[] = [
     expected: "margin-bottom: 32px;",
     interpolate,
     props: {
-      spacing: "spacings.large",
+      spacing: Spacing.Large,
       theme: {
         media: ["576px", "768px", "992px", "1200px"],
-        spacings: { large: "32px" }
+        spacings: { small: "8px", default: "16px", large: "32px" }
       }
     }
   },
@@ -38,7 +47,7 @@ const testCases: TestCase[] = [
     ].join("\n"),
     interpolate,
     props: {
-      spacing: ["spacings.small", "spacings.default", null, "spacings.large"],
+      spacing: [Spacing.Small, Spacing.Default, null, Spacing.Large],
       theme: {
         media: ["576px", "768px", "992px", "1200px"],
         spacings: { small: "8px", default: "16px", large: "32px" }
@@ -50,7 +59,7 @@ const testCases: TestCase[] = [
     expected: "",
     interpolate,
     props: {
-      spacing: "unknown",
+      spacing: Spacing.Unknown,
       theme: {
         media: ["576px", "768px", "992px", "1200px"],
         spacings: { small: "8px", default: "16px", large: "32px" }
@@ -67,7 +76,7 @@ const testCases: TestCase[] = [
     ].join("\n"),
     interpolate,
     props: {
-      spacing: ["spacings.small", "spacings.unknown", null, "spacings.large"],
+      spacing: [Spacing.Small, Spacing.Unknown, null, Spacing.Large],
       theme: {
         media: ["576px", "768px", "992px", "1200px"],
         spacings: { small: "8px", default: "16px", large: "32px" }
@@ -77,7 +86,7 @@ const testCases: TestCase[] = [
   {
     title: "ignores excess values",
     expected: [
-      "margin-bottom: 4px;",
+      "margin-bottom: 8px;",
       "@media (min-width: 576px) { margin-bottom: 8px; }",
       "@media (min-width: 768px) { margin-bottom: 16px; }",
       "",
@@ -86,15 +95,15 @@ const testCases: TestCase[] = [
     interpolate,
     props: {
       spacing: [
-        "spacings.tiny",
-        "spacings.small",
-        "spacings.default",
-        "spacings.large",
-        "spacings.large"
+        Spacing.Small,
+        Spacing.Small,
+        Spacing.Default,
+        Spacing.Large,
+        Spacing.Large
       ],
       theme: {
         media: ["576px", "768px"],
-        spacings: { tiny: "4px", small: "8px", default: "16px", large: "32px" }
+        spacings: { small: "8px", default: "16px", large: "32px" }
       }
     }
   }
@@ -102,9 +111,11 @@ const testCases: TestCase[] = [
 
 testCases.forEach(({ title, expected, interpolate: i, props: p }) => {
   test(title, () => {
-    const resolver = looky(props => props.theme.media);
-    const resolveSpacing = resolver("spacing", i);
-    const out = resolveSpacing(p);
+    const resolver = Looky<Theme>(theme => theme.media);
+    const mixin = resolver<"spacing", Spacing>("spacing", i, (th, v) => {
+      return th.spacings[v];
+    });
+    const out = mixin(p);
     expect(out).toBe(expected);
   });
 });

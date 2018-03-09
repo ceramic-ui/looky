@@ -1,39 +1,46 @@
 import dlv from "dlv";
 
-export type ResponsiveValue = string | Array<string | null>;
-
-export type ResponsiveProp<K extends string> = { [p in K]?: ResponsiveValue };
-export interface Themed {
-  theme: {
-    media: string[];
-  };
+export interface Themed<T> {
+  theme?: T;
 }
+export type Themeable<K extends string, V> = { [p in K]?: ResponsiveValue<V> };
 
-type Props<K extends string> = ResponsiveProp<K> & Themed;
+export type Props<T, K extends string, V> = Themed<T> & Themeable<K, V>;
 
-type Interpolator = (value: any) => string;
+export type ResponsiveValue<V> = V | Array<V | null>;
 
-// Type refining functions
-const propAsThemed = (props: Themed): Themed => props;
-const propAsResponsive = <K extends string>(
-  props: Props<K>
-): ResponsiveProp<K> => props;
+export type Interpolator = (value: any) => string;
 
-const lookit = (getMedia: (props: Themed) => string[]) => {
-  const resolve = <K extends string>(
-    propName: K,
-    interpolate: Interpolator
+const asThemed = <T, K extends string, V>(p: Props<T, K, V>): Themed<T> => p;
+const asThemeable = <T, K extends string, V>(
+  p: Props<T, K, V>
+): Themeable<K, V> => p;
+
+type ThemeGetter<Theme, V> = (theme: Theme, propValue: V) => any;
+
+const defaultGetFromTheme = <Theme, V>(theme: Theme, propValue: V) =>
+  dlv(theme, propValue);
+
+const Looky = <Theme>(getMedia: (theme: Theme) => string[]) => {
+  const resolve = <K extends string, V>(
+    prop: K,
+    interpolate: Interpolator,
+    getValueFromTheme: ThemeGetter<Theme, V> = defaultGetFromTheme
   ) => {
-    return (props: Props<K>): string => {
-      const value = propAsResponsive(props)[propName];
-      const media = getMedia(propAsThemed(props));
+    const mixin = (props: Props<Theme, K, V>): string => {
+      const value = asThemeable(props)[prop];
+      const { theme } = asThemed(props);
+      if (!theme || !value) {
+        return "";
+      }
+      const media = getMedia(theme);
       const keys = Array.isArray(value) ? value : [value];
       return keys
         .map((k, i) => {
           if (!k) {
             return "";
           }
-          const themeValue = dlv(props.theme, k);
+          const themeValue = getValueFromTheme(theme, k);
           if (!themeValue) {
             return "";
           }
@@ -49,9 +56,11 @@ const lookit = (getMedia: (props: Themed) => string[]) => {
         })
         .join("\n");
     };
+
+    return mixin;
   };
 
   return resolve;
 };
 
-export default lookit;
+export default Looky;

@@ -8,7 +8,7 @@ const theme = {
   spacings: { small: "8px", default: "16px", large: "32px" }
 };
 
-const looky = Looky(props => props.theme.media);
+const looky = Looky<typeof theme>(t => t.media);
 const gutterX = looky(
   "gutterX",
   v => `
