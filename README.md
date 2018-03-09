@@ -40,8 +40,8 @@ const theme = {
   ]
 };
 
-/* We need to show Looky how to get the breakpoints */
-const looky = Looky(props => props.theme.media);
+/* We need to show Looky where to locate breakpoints in our theme */
+const looky = Looky(theme => theme.media);
 
 /* Now we can create some resolvers for some style attributes */
 
@@ -55,7 +55,12 @@ const gutterX = looky(
   value => `
 padding-left: ${value};
 padding-right: ${value};
-`
+`,
+  // Since the theme is deeply structured we need to show looky how to get a
+  // value from the theme given the value of a prop
+  // If your theme is flat (no nested objects or arrays) then you don't need
+  // this pass function
+  (theme, value) => theme.spacings[value]
 );
 
 /* Same idea as the resolver for the gutterX prop */
@@ -64,11 +69,18 @@ const gutterY = looky(
   value => `
 padding-left: ${value};
 padding-right: ${value};
-`
+`,
+  // see the comment in gutterX for why we need this function
+  (theme, value) => theme.spacings[value]
 );
 
 /* Same idea as the resolver for the gutterX prop */
-const spacing = looky("spacing", value => `margin-bottom: ${value};`);
+const spacing = looky(
+  "spacing",
+  value => `margin-bottom: ${value};`,
+  // see the comment in gutterX for why we need this function
+  (theme, value) => theme.spacings[value]
+);
 
 const Container = styled.div`
   box-sizing: border-box;
