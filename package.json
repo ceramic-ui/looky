@@ -1,6 +1,6 @@
 {
   "name": "looky",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Responsively use values from your theme in your css-in-js",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",
