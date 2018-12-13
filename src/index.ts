@@ -61,18 +61,18 @@ const Looky = <Theme>(getMedia: (theme: Theme) => string[]) => {
     const mixin = (props: Props<Theme, K, V>): string => {
       const value = asThemeable(props)[prop];
       const { theme } = asThemed(props);
-      if (!theme || !value) {
+      if (!theme || value == null) {
         return "";
       }
       const media = getMedia(theme);
       const keys = Array.isArray(value) ? value : [value];
       return keys
         .map((k, i) => {
-          if (!k) {
+          if (k == null) {
             return "";
           }
           const themeValue = getValueFromTheme(theme, k);
-          if (!themeValue) {
+          if (themeValue == null) {
             return "";
           }
           const rules = interpolate(themeValue);
